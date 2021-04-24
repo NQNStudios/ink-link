@@ -1,0 +1,4 @@
+-cp src
+--main CLI
+--python cli.py
+--cmd python cli.py start src/test.ink
