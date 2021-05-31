@@ -1,6 +1,0 @@
-Hello!
-
-* whats
-* up
-
-- Stuff.
