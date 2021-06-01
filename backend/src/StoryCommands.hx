@@ -9,6 +9,7 @@ using StoryCommands;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 
+using haxe.macro.TypeTools;
 using tink.MacroApi;
 #end
 
@@ -58,6 +59,16 @@ class StoryCommands {
                         values: [EArrayDecl([EConst(CString(v.name, DoubleQuotes)).at()]).at()],
                         expr: macro Sys.println($p{["story", v.name]})
                     });
+                case EFunction(FNamed(name, _), {
+                    ret: ret,
+                    expr: expr,
+                    args: []
+                }) if (ret.toString() != "Void"):
+                    processCommandCases.push({
+                        values: [EArrayDecl([EConst(CString(name, DoubleQuotes)).at()]).at()],
+                        expr: macro Sys.println($p{["story", name]}())
+                    });
+
                 default:
                     Sys.println(expr);
                     Sys.println(parsedExpr.expr);
