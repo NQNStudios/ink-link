@@ -1,0 +1,18 @@
+{
+  "name": "inklink-backend",
+  "version": "0.0.0",
+  "description": "Background process for ink-link",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "dts2hx --all"
+  },
+  "author": "Nat Quayle Nelson",
+  "license": "SEE LICENSE IN ink-link/LICENSE",
+  "dependencies": {
+    "inkjs": "^2.0.0"
+  },
+  "devDependencies": {
+    "dts2hx": "^0.15.3"
+  }
+}

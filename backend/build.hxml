@@ -1,5 +1,5 @@
--lib hxcs
---class-path src
---cs out
---main inklink.Main
---cmd out\\bin\\Main.exe
+-lib hxnodejs
+-lib inkjs
+-cp src
+-main Main
+--js index.js

@@ -1,11 +1,26 @@
 # ink-link
-Pretend your favorite language has a first-class Ink runtime
+Pretend your favorite Haxe target language has an Ink port on par with InkJS
+
+This is a dirty hack to run Ink scripts in weird environments.
+
+Dependencies:
+- Mono (for Inklecate)
+- NodeJS (for InkJS)
+- Haxe (for running ink-link)
+
+Setup:
+
+```
+(cd backend && npm install .)
+haxelib install hxnodejs
+(cd backend && haxe build.hxml)
+```
+
+Usage:
+
+`node index.js [inkFile]`
 
 Limitations:
-- External functions not supported
-- Can't use the whole Story API, only navigation available through the Inklecate player
-- Replays the whole story after every choice, so might be slow
-- Try not to use this in a real game.
-
-Bonus:
-- Undo!
+- No external functions
+- Only supports Windows
+- Not for production use
