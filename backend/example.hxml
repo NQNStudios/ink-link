@@ -1,2 +1,0 @@
-build.hxml
---cmd node index.js examples/basic.ink

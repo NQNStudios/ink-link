@@ -1,6 +1,5 @@
 package;
 
-import inkjs.engine.story.Story;
 import js.node.ChildProcess;
 import sys.io.File;
 
@@ -10,10 +9,14 @@ class Main {
 	static function main() {
 		var args = Sys.args();
 
+        var startSync = false;
 		var syncCommand = [];
 		var inkFile = "";
+
 		while (args.length > 0) {
 			switch (args.shift()) {
+                case "--start-sync":
+                    startSync = true;
 				case "--sync":
 					if (args.length > 0) {
 						syncCommand = args;
@@ -40,11 +43,24 @@ class Main {
 		var jsonTrimmed = json.substr(1);
 
 		// Create a story
-		var story = new Story(jsonTrimmed);
+		var story = new CommandLineStory(jsonTrimmed);
 
-		if (syncCommand.length > 0) {} else {}
-
-		story.Continue();
-		trace(story.currentText);
+        if (startSync) {
+            // TODO Overwrite the history file, blanking it out
+        }
+		if (syncCommand.length > 0) {
+            // TODO Get saved commands from history file
+            // TODO Run saved commands
+            // TODO Run new command
+            // TODO Append new command to history file
+        } else {
+            // Loop through stdin parsing and running commands
+            while (true) {
+                Sys.print("> ");
+                var input = Sys.stdin().readLine();
+                if (input == "exit") break;
+                story.processCommand(input.split(" "));
+            }
+        }
 	}
 }

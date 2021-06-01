@@ -1,5 +1,6 @@
 -lib hxnodejs
 -lib inkjs
+-lib tink_macro
 -cp src
 -main Main
 --js index.js
