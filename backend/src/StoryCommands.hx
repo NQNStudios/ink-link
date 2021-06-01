@@ -57,7 +57,12 @@ class StoryCommands {
                 case EVars([v]):
                     processCommandCases.push({
                         values: [EArrayDecl([EConst(CString(v.name, DoubleQuotes)).at()]).at()],
-                        expr: macro Sys.println($p{["story", v.name]})
+                        expr: switch (v.type.toString()) {
+                            case "Array<inkjs.engine.choice.Choice>":
+                                macro return [for (choice in $p{["story", v.name]}) '* ' + choice.text].join("\n");
+                            default:
+                                macro return Std.string($p{["story", v.name]});
+                        }
                     });
                 case EFunction(FNamed(name, _), {
                     ret: ret,
@@ -67,9 +72,9 @@ class StoryCommands {
                     processCommandCases.push({
                         values: [EArrayDecl([EConst(CString(name, DoubleQuotes)).at()]).at()],
                         expr: if (ret.toString() != "Void") {
-                            macro Sys.println($p{["story", name]}());
+                            macro return Std.string($p{["story", name]}());
                         } else {
-                            macro $p{["story", name]}();
+                            macro { $p{["story", name]}(); return ""; }
                         }
                     });
                 case EFunction(FNamed(name, _), {
@@ -104,9 +109,9 @@ class StoryCommands {
                     processCommandCases.push({
                         values: [EArrayDecl(arrayPattern).at()],
                         expr: if (ret.toString() != "Void") {
-                            macro Sys.println($p{["story", name]}($a{callArgs}));
+                            macro return Std.string($p{["story", name]}($a{callArgs}));
                         } else {
-                            macro $p{["story", name]}($a{callArgs});
+                            macro { $p{["story", name]}($a{callArgs}); return ""; };
                         }
                     });
                 default:
@@ -119,7 +124,7 @@ class StoryCommands {
         var switchExp = ESwitch(
             macro (command : Array<String>),
             processCommandCases,
-            macro Sys.println('error! bad command $command')
+            macro { Sys.println('error! bad command $command'); return ""; }
             ).at();
         // trace(switchExp.toString());
 
