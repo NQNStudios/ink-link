@@ -44,10 +44,10 @@ class StoryCommands {
 
             expr = expr.trim();
             var parsedExpr = try {
-                // Pretend functions have bodies
+                // Pretend functions have bodies so they parse
                 Context.parse(expr, Context.currentPos());
             } catch (e) {
-                Sys.println('Cannot convert Story API `${expr.trim()}` for command line usage because $e');
+                // Sys.println('Cannot convert Story API `${expr.trim()}` for command line usage because $e');
                 continue;
             };
 
@@ -63,12 +63,52 @@ class StoryCommands {
                     ret: ret,
                     expr: expr,
                     args: []
-                }) if (ret.toString() != "Void"):
+                }):
                     processCommandCases.push({
                         values: [EArrayDecl([EConst(CString(name, DoubleQuotes)).at()]).at()],
-                        expr: macro Sys.println($p{["story", name]}())
+                        expr: if (ret.toString() != "Void") {
+                            macro Sys.println($p{["story", name]}());
+                        } else {
+                            macro $p{["story", name]}();
+                        }
                     });
+                case EFunction(FNamed(name, _), {
+                    ret: ret,
+                    expr: expr,
+                    args: args
+                }):
+                    var argStuff = "";
+                    var arrayPattern = [EConst(CString(name, DoubleQuotes)).at()];
+                    var callArgs = [];
+                    var canConvert = true;
 
+                    for (arg in args) {
+                        argStuff += arg.type.toString() + " ";
+                        arrayPattern.push(macro $i{arg.name});
+                        switch (arg.type.toString()) {
+                            case "String":
+                                callArgs.push(macro $i{arg.name});
+                            case "Float":
+                                callArgs.push(macro Std.parseFloat($i{arg.name}));
+                            // Bools could easily also be converted, but there don't seem to be any functions
+                            // that take bools without taking complicated types as well
+                            default:
+                                canConvert = false;
+                        }
+                    }
+                    // Sys.println('NAME $name RET ${ret.toString()} ARGS $argStuff');
+                    if (!canConvert) {
+                        // Sys.println("skipped!");
+                        continue;
+                    }
+                    processCommandCases.push({
+                        values: [EArrayDecl(arrayPattern).at()],
+                        expr: if (ret.toString() != "Void") {
+                            macro Sys.println($p{["story", name]}($a{callArgs}));
+                        } else {
+                            macro $p{["story", name]}($a{callArgs});
+                        }
+                    });
                 default:
                     Sys.println(expr);
                     Sys.println(parsedExpr.expr);
