@@ -4,7 +4,7 @@ Pretend your favorite Haxe target language has an Ink port on par with InkJS
 This is a dirty hack to run Ink scripts in weird environments.
 
 ## Dependencies
-- Mono (for Inklecate)
+- Dotnet Core (for Inklecate)
 - NodeJS (for InkJS)
 - Haxe (for running ink-link)
 
